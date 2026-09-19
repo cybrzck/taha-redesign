@@ -1,5 +1,5 @@
 export const mockData = {
-  strategicAreas: [
+  strategicAAreas: [
         {
             id: 1,
             number: "01",
