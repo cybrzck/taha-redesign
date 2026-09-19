@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    devIndicators:
+        process.env.SHOW_DEV_INDICATOR === "true" ? {} : false,
+
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "images.unsplash.com",
+            },
+        ],
+    },
 };
 
 export default nextConfig;

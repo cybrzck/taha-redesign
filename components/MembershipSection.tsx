@@ -3,29 +3,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { tahaApi } from "@/lib/api";
+import type { Membership } from "@/types/taha";
 
-const categories = [
-    {
-        number: "01",
-        title: "Comprehensive",
-        description:
-            "Large-scale producers, exporters and large-scale processors.",
-    },
-    {
-        number: "02",
-        title: "Allied",
-        description:
-            "Service providers including input suppliers, technology companies, financial institutions, logistics and consultants.",
-    },
-    {
-        number: "03",
-        title: "Associate",
-        description:
-            "Small growers, groups, associations and individuals involved in horticultural activities.",
-    },
-];
-
-function MemberCounter() {
+function MemberCounter({ target }: { target: number }) {
     const [count, setCount] = useState(0);
     const [started, setStarted] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -37,8 +18,9 @@ function MemberCounter() {
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !started) {
+                if (entry.isIntersecting) {
                     setStarted(true);
+                    observer.disconnect();
                 }
             },
             { threshold: 0.4 },
@@ -47,12 +29,11 @@ function MemberCounter() {
         observer.observe(element);
 
         return () => observer.disconnect();
-    }, [started]);
+    }, []);
 
     useEffect(() => {
         if (!started) return;
 
-        const target = 25900;
         const duration = 1800;
         const startTime = performance.now();
 
@@ -68,11 +49,13 @@ function MemberCounter() {
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
+            } else {
+                setCount(target);
             }
         };
 
         requestAnimationFrame(animate);
-    }, [started]);
+    }, [started, target]);
 
     return (
         <div ref={ref} className="mt-3 flex items-end">
@@ -88,6 +71,73 @@ function MemberCounter() {
 }
 
 export default function MembershipSection() {
+    const [membership, setMembership] = useState<Membership | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchMembership = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const response = await tahaApi.getMembership();
+
+            if (!response.data) {
+                throw new Error("No membership data was returned.");
+            }
+
+            setMembership(response.data);
+        } catch (error) {
+            console.error("Failed to load membership:", error);
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to load membership.",
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadMembership = async () => {
+            try {
+                const response = await tahaApi.getMembership();
+
+                if (!response.data) {
+                    throw new Error("No membership data was returned.");
+                }
+
+                if (!cancelled) {
+                    setMembership(response.data);
+                    setError(null);
+                    setLoading(false);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Failed to load membership:", error);
+
+                    setError(
+                        error instanceof Error
+                            ? error.message
+                            : "Failed to load membership.",
+                    );
+
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadMembership();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
     return (
         <section
             id="membership"
@@ -119,63 +169,124 @@ export default function MembershipSection() {
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-[0.85fr_1.4fr]">
-                    <div className="border-b border-white/15 py-8 lg:border-b-0 lg:border-r lg:py-9 lg:pr-12">
-                        <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-taha-light">
-                            TAHA Network
-                        </p>
+                {loading && (
+                    <div className="grid lg:grid-cols-[0.85fr_1.4fr]">
+                        <div className="border-b border-white/15 py-8 lg:border-b-0 lg:border-r lg:py-9 lg:pr-12">
+                            <div className="h-3 w-24 animate-pulse bg-white/10" />
+                            <div className="mt-4 h-16 w-56 animate-pulse bg-white/10" />
+                            <div className="mt-4 h-12 w-full max-w-sm animate-pulse bg-white/5" />
+                            <div className="mt-6 h-6 w-32 animate-pulse bg-white/10" />
+                        </div>
 
-                        <MemberCounter />
+                        <div className="lg:pl-12">
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <div
+                                    key={index}
+                                    className="grid gap-4 border-b border-white/15 py-6 last:border-b-0 sm:grid-cols-[60px_1fr] sm:py-7"
+                                >
+                                    <div className="h-3 w-5 animate-pulse bg-white/10" />
 
-                        <p className="mt-3 max-w-sm text-sm leading-6 text-white/60">
-                            Members connected through Tanzania&apos;s
-                            horticulture industry.
-                        </p>
-
-                        <Link
-                            href="#"
-                            className="group mt-6 inline-flex items-center gap-2 border-b border-taha-light pb-1.5 text-sm font-semibold text-white transition hover:border-white"
-                        >
-                            Become a Member
-                            <ArrowRight
-                                size={16}
-                                className="transition-transform duration-300 group-hover:translate-x-1"
-                            />
-                        </Link>
-                    </div>
-
-                    <div className="lg:pl-12">
-                        {categories.map((category) => (
-                            <div
-                                key={category.number}
-                                className="group grid gap-4 border-b border-white/15 py-6 last:border-b-0 sm:grid-cols-[60px_1fr] sm:py-7"
-                            >
-                                <span className="font-mono text-[9px] tracking-[0.2em] text-white/30 transition-colors group-hover:text-taha-light">
-                                    {category.number}
-                                </span>
-
-                                <div>
-                                    <div className="flex items-center justify-between gap-5">
-                                        <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
-                                            {category.title}
-                                        </h3>
-
-                                        <ArrowRight
-                                            size={16}
-                                            className="shrink-0 text-white/25 transition-all duration-300 group-hover:translate-x-1 group-hover:text-taha-light"
-                                        />
+                                    <div>
+                                        <div className="h-6 w-40 animate-pulse bg-white/10" />
+                                        <div className="mt-3 h-10 max-w-2xl animate-pulse bg-white/5" />
                                     </div>
-
-                                    <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">
-                                        {category.description}
-                                    </p>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
 
-                <div className="grid gap-3 border-t border-white/15 pt-6 lg:grid-cols-[1fr_2fr] lg:gap-10">
+                {!loading && error && (
+                    <div className="border-b border-white/15 py-10">
+                        <p className="text-sm font-semibold">
+                            Unable to load membership information.
+                        </p>
+
+                        <p className="mt-2 text-sm text-white/50">
+                            {error}
+                        </p>
+
+                        <button
+                            type="button"
+                            onClick={fetchMembership}
+                            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-taha-light transition hover:text-white"
+                        >
+                            Try again
+                            <ArrowRight size={16} />
+                        </button>
+                    </div>
+                )}
+
+                {!loading && !error && !membership && (
+                    <div className="border-b border-white/15 py-10">
+                        <p className="text-sm text-white/50">
+                            No membership information is currently available.
+                        </p>
+                    </div>
+                )}
+
+                {!loading && !error && membership && (
+                    <div className="grid lg:grid-cols-[0.85fr_1.4fr]">
+                        <div className="border-b border-white/15 py-8 lg:border-b-0 lg:border-r lg:py-9 lg:pr-12">
+                            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-taha-light">
+                                TAHA Network
+                            </p>
+
+                            <MemberCounter
+                                target={membership.totalMembers}
+                            />
+
+                            <p className="mt-3 max-w-sm text-sm leading-6 text-white/60">
+                                Members connected through Tanzania&apos;s
+                                horticulture industry.
+                            </p>
+
+                            <Link
+                                href="/membership"
+                                className="group mt-6 inline-flex items-center gap-2 border-b border-taha-light pb-1.5 text-sm font-semibold text-white transition hover:border-white"
+                            >
+                                Become a Member
+                                <ArrowRight
+                                    size={16}
+                                    className="transition-transform duration-300 group-hover:translate-x-1"
+                                />
+                            </Link>
+
+                        </div>
+
+                        <div className="lg:pl-12">
+                            {membership.categories.map((category) => (
+                                <div
+                                    key={category.id}
+                                    className="group grid gap-4 border-b border-white/15 py-6 last:border-b-0 sm:grid-cols-[60px_1fr] sm:py-7"
+                                >
+                                    <span className="font-mono text-[9px] tracking-[0.2em] text-white/30 transition-colors group-hover:text-taha-light">
+                                        {category.number}
+                                    </span>
+
+                                    <div>
+                                        <div className="flex items-center justify-between gap-5">
+                                            <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
+                                                {category.title}
+                                            </h3>
+
+                                            <ArrowRight
+                                                size={16}
+                                                className="shrink-0 text-white/25 transition-all duration-300 group-hover:translate-x-1 group-hover:text-taha-light"
+                                            />
+                                        </div>
+
+                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/50">
+                                            {category.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* <div className="grid gap-3 border-t border-white/15 pt-6 lg:grid-cols-[1fr_2fr] lg:gap-10">
                     <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-taha-light">
                         Why join TAHA
                     </span>
@@ -185,7 +296,7 @@ export default function MembershipSection() {
                         opportunities, knowledge and collective representation
                         across Tanzania&apos;s horticulture sector.
                     </p>
-                </div>
+                </div> */}
             </div>
         </section>
     );

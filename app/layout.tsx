@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     ],
     icons: {
         icon: "/taha-logo.png",
-        apple: "../apple-icon.png",
+        apple: "/apple-icon.png",
     },
 };
 
@@ -34,7 +34,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" data-scroll-behavior="smooth">
             <body>{children}</body>
         </html>
     );
