@@ -91,7 +91,7 @@ export const mockData = {
             id: 7,
             number: "07",
             title: "Horticultural Nuts1",
-            image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
+            image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1000&q=90",
         },
          {
             id: 8,
@@ -103,7 +103,7 @@ export const mockData = {
             id: 9,
             number: "09",
             title: "Horticultural Nuts3",
-            image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
+            image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1000&q=90",
         },
     ],
 
