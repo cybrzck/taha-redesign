@@ -87,6 +87,24 @@ export const mockData = {
             title: "Horticultural Nuts",
             image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
         },
+         {
+            id: 7,
+            number: "07",
+            title: "Horticultural Nuts",
+            image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
+        },
+         {
+            id: 8,
+            number: "08",
+            title: "Horticultural Nuts",
+            image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
+        },
+         {
+            id: 9,
+            number: "09",
+            title: "Horticultural Nuts",
+            image: "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=90",
+        },
     ],
 
     membership: {
