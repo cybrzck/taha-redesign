@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
             {
                 protocol: "https",
                 hostname: "images.unsplash.com",
+                pathname: "/**",
+            },
+            {
+                protocol: "https",
+                hostname: "taha.or.tz",
+                pathname: "/wp-content/uploads/**",
             },
         ],
     },

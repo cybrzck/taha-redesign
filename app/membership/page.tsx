@@ -216,7 +216,7 @@ export default function MembershipPage() {
     <div className="absolute inset-0 bg-taha-dark/80" />
 
     <div className="relative mx-auto max-w-[1400px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-        <SectionLabel>TAHA Membership</SectionLabel>
+        {/*<SectionLabel>TAHA Membership</SectionLabel>*/}
 
         <div className="mt-5 grid gap-7 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
             <div>
@@ -340,7 +340,7 @@ export default function MembershipPage() {
               return (
                 <div
                   key={category.number}
-                  className="bg-white p-5 transition hover:-translate-y-0.5 sm:p-6"
+                  className="bg-white p-5 transition hover:-translate-y-5.5 sm:p-6"
                 >
                   <div className="flex items-start justify-between">
                     <span className="font-mono text-[10px] text-neutral-300">

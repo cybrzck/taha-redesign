@@ -6,10 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import {
     ArrowRight,
     ChevronDown,
+    BriefcaseBusiness,
     Mail,
     MapPin,
     Menu,
     Search,
+    Sprout,
+    Home,
     X,
 } from "lucide-react";
 
@@ -318,14 +321,14 @@ export default function Navbar() {
 
         if (!value) return;
 
-        window.location.href = `/search?q=${encodeURIComponent(value)}`;
+        window.location.href = `/search?query=${encodeURIComponent(value)}`;
     }
 
     return (
         <>
             <header
                 ref={navRef}
-                className="sticky top-0 z-50 border-b border-neutral-200 bg-white"
+                className="sticky top-0 z-50 border-b border-neutral-200 bg-taha-light"
             >
                 {/* Utility Bar */}
                 <div className="hidden bg-taha-dark text-white lg:block">
@@ -407,11 +410,11 @@ export default function Navbar() {
                             onClick={closeNavigation}
                             className="flex shrink-0 items-center"
                         >
-                            <div className="flex h-12 w-12 items-center justify-center bg-taha-dark p-2">
+                            <div className="flex items-center justify-center p-2">
                                 <Image
                                     src="/taha-logo.png"
                                     alt="TAHA"
-                                    width={40}
+                                    width={70}
                                     height={40}
                                     className="h-full w-auto object-contain"
                                 />
@@ -544,27 +547,37 @@ export default function Navbar() {
 
                 {/* Search */}
                 {searchOpen && (
-                    <div className="absolute left-0 right-0 top-full border-b border-neutral-200 bg-white shadow-lg">
+                    <div className="absolute left-0 right-0 top-full z-40 border-b border-neutral-200 bg-taha-light shadow-lg">
                         <form
                             onSubmit={submitSearch}
                             className="mx-auto max-w-4xl px-6 py-5"
                         >
-                            <div className="relative">
-                                <Search
-                                    size={20}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                                />
+                            <div className="flex gap-2">
+                                <div className="relative flex-1">
+                                    <Search
+                                        size={20}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
+                                    />
 
-                                <input
-                                    autoFocus
-                                    type="search"
-                                    value={search}
-                                    onChange={(event) =>
-                                        setSearch(event.target.value)
-                                    }
-                                    placeholder="Search TAHA..."
-                                    className="h-14 w-full border border-neutral-300 pl-12 pr-5 text-sm text-neutral-800 outline-none transition-colors placeholder:text-neutral-400 focus:border-taha focus:ring-1 focus:ring-taha"
-                                />
+                                    <input
+                                        autoFocus
+                                        type="search"
+                                        value={search}
+                                        onChange={(event) =>
+                                            setSearch(event.target.value)
+                                        }
+                                        placeholder="Search TAHA..."
+                                        className="h-14 w-full border border-neutral-300 pl-12 pr-5 text-sm text-neutral-800 outline-none transition-colors placeholder:text-neutral-400 focus:border-taha focus:ring-1 focus:ring-taha"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="flex h-14 shrink-0 items-center gap-2 bg-taha-dark px-6 text-sm font-bold text-white transition-colors hover:bg-taha"
+                                >
+                                    <Search size={18} />
+                                    Search
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -572,7 +585,7 @@ export default function Navbar() {
 
                 {/* Desktop Mega Menu */}
                 {activeMenu && (
-                    <div className="absolute left-0 right-0 top-full border-t border-neutral-100 bg-white shadow-[0_15px_40px_rgba(0,0,0,0.10)]">
+                    <div className="absolute left-0 right-0 top-full border-t border-neutral-100 bg-taha-light shadow-[0_15px_40px_rgba(0,0,0,0.10)]">
                         <div className="mx-auto max-w-[1400px] px-6 py-8">
                             {(() => {
                                 const menu = menus.find(
@@ -653,7 +666,7 @@ export default function Navbar() {
                                         </div>
 
                                         {menu.featured && (
-                                            <div className="self-start bg-taha-light p-7">
+                                            <div className="self-start rounded-lg bg-white p-7">
                                                 <div className="text-xs font-bold uppercase tracking-[0.15em] text-taha">
                                                     Featured
                                                 </div>
@@ -717,7 +730,7 @@ export default function Navbar() {
 
                 {/* Mobile Panel */}
                 <aside
-                    className={`absolute bottom-0 left-0 top-0 w-[min(420px,92vw)] overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out ${
+                    className={`absolute bottom-0 left-0 top-0 w-[min(420px,92vw)] overflow-y-auto bg-taha-light shadow-2xl transition-transform duration-300 ease-out ${
                         mobileOpen
                             ? "translate-x-0"
                             : "-translate-x-full"
@@ -725,16 +738,17 @@ export default function Navbar() {
                 >
                     {/* Mobile Header */}
                     <div className="flex h-[78px] items-center justify-between border-b border-neutral-200 px-6">
-                         <Link
+                        <Link
                             href="/"
                             onClick={closeNavigation}
                             className="flex shrink-0 items-center"
                         >
-                            <div className="flex h-12 w-12 items-center justify-center bg-taha-dark p-2">
+                            <div className="flex items-center justify-center  p-2">
                                 <Image
                                     src="/taha-logo.png"
                                     alt="TAHA"
-                                    width={60}
+                                    loading="lazy"
+                                    width={70}
                                     height={60}
                                     className="h-full w-auto object-contain"
                                 />
@@ -864,51 +878,124 @@ export default function Navbar() {
                                 <ArrowRight size={17} />
                             </Link>
                         </div>
-{/* Contact */}
-<div className="mt-8 hidden border-t border-neutral-200 pt-6 sm:block">
-    <div className="text-xs font-bold uppercase tracking-wider text-neutral-400">
-        Contact
-    </div>
 
-    <a
-        href="mailto:info@taha.or.tz"
-        className="mt-4 flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-taha"
-    >
-        <Mail size={16} />
-        info@taha.or.tz
-    </a>
+                        {/* Contact */}
+                        <div className="mt-8 hidden border-t border-neutral-200 pt-6 sm:block">
+                            <div className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                                Contact
+                            </div>
 
-    <div className="mt-3 flex items-center gap-2 text-sm text-neutral-600">
-        <MapPin size={16} />
-        Arusha, Tanzania
-    </div>
+                            <a
+                                href="mailto:info@taha.or.tz"
+                                className="mt-4 flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-taha"
+                            >
+                                <Mail size={16} />
+                                info@taha.or.tz
+                            </a>
 
-    <div className="mt-6 flex gap-5 text-sm font-semibold text-neutral-500">
-        <a
-            href="#"
-            className="transition-colors hover:text-taha"
-        >
-            Facebook
-        </a>
+                            <div className="mt-3 flex items-center gap-2 text-sm text-neutral-600">
+                                <MapPin size={16} />
+                                Arusha, Tanzania
+                            </div>
 
-        <a
-            href="#"
-            className="transition-colors hover:text-taha"
-        >
-            Instagram
-        </a>
+                            <div className="mt-6 flex gap-5 text-sm font-semibold text-neutral-500">
+                                <a
+                                    href="#"
+                                    className="transition-colors hover:text-taha"
+                                >
+                                    Facebook
+                                </a>
 
-        <a
-            href="#"
-            className="transition-colors hover:text-taha"
-        >
-            LinkedIn
-        </a>
-    </div>
-</div>
+                                <a
+                                    href="#"
+                                    className="transition-colors hover:text-taha"
+                                >
+                                    Instagram
+                                </a>
+
+                                <a
+                                    href="#"
+                                    className="transition-colors hover:text-taha"
+                                >
+                                    LinkedIn
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </aside>
             </div>
+
+            {/* Mobile Bottom Navigation */}
+            <nav
+                className={`fixed bottom-0 left-0 right-0 z-[90] px-3 pb-4 xl:hidden ${
+                    mobileOpen
+                        ? "pointer-events-none opacity-0"
+                        : "opacity-100"
+                }`}
+            >
+                <div className="mx-auto max-w-lg overflow-hidden rounded-2xl border border-white/40 bg-white/75 shadow-[0_8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl">
+                    <div className="grid h-[68px] grid-cols-5">
+                        <Link
+                            href="/"
+                            onClick={closeNavigation}
+                            className="flex flex-col items-center justify-center gap-1 text-taha transition-colors"
+                        >
+                            <Home size={20} strokeWidth={2} />
+                            <span className="text-[10px] font-semibold">
+                    Home
+                </span>
+                        </Link>
+
+                        <Link
+                            href="/about"
+                            onClick={closeNavigation}
+                            className="flex flex-col items-center justify-center gap-1 text-neutral-500 transition-colors hover:text-taha"
+                        >
+                            <Sprout size={20} strokeWidth={2} />
+                            <span className="text-[10px] font-semibold">
+                    About
+                </span>
+                        </Link>
+
+                        <Link
+                            href="/markets"
+                            onClick={closeNavigation}
+                            className="flex flex-col items-center justify-center gap-1 text-neutral-500 transition-colors hover:text-taha"
+                        >
+                            <Search size={20} strokeWidth={2} />
+                            <span className="text-[10px] font-semibold">
+                    Markets
+                </span>
+                        </Link>
+
+                        <Link
+                            href="/projects"
+                            onClick={closeNavigation}
+                            className="flex flex-col items-center justify-center gap-1 text-neutral-500 transition-colors hover:text-taha"
+                        >
+                            <BriefcaseBusiness
+                                size={20}
+                                strokeWidth={2}
+                            />
+                            <span className="text-[10px] font-semibold">
+                    Projects
+                </span>
+                        </Link>
+
+                        <button
+                            type="button"
+                            onClick={() => setMobileOpen(true)}
+                            className="flex flex-col items-center justify-center gap-1 text-neutral-500 transition-colors hover:text-taha"
+                            aria-label="Open more navigation"
+                        >
+                            <Menu size={20} strokeWidth={2} />
+                            <span className="text-[10px] font-semibold">
+                    More
+                </span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
         </>
     );
 }
